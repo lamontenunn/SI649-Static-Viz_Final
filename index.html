@@ -1,0 +1,232 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How the NBA Changed Its Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      background: #fafafa;
+      color: #222;
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 32px 20px 60px 20px;
+      background: white;
+    }
+    .kicker {
+      color: #666;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 36px;
+      line-height: 1.15;
+      margin: 0 0 10px 0;
+    }
+    .dek {
+      font-size: 18px;
+      color: #444;
+      margin-bottom: 18px;
+    }
+    .byline {
+      font-size: 14px;
+      color: #666;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #e5e5e5;
+      margin-bottom: 24px;
+    }
+    .note {
+      background: #f3f4f6;
+      border-left: 4px solid #2563eb;
+      padding: 12px 14px;
+      margin: 20px 0 28px 0;
+      font-size: 15px;
+    }
+    h2 {
+      margin-top: 34px;
+      margin-bottom: 8px;
+      font-size: 24px;
+    }
+    p {
+      margin-top: 0;
+      margin-bottom: 14px;
+    }
+    .chart {
+      margin: 16px 0 24px 0;
+    }
+    .small {
+      color: #666;
+      font-size: 14px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .refs li {
+      margin-bottom: 10px;
+    }
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e5e5;
+      color: #666;
+      font-size: 14px;
+    }
+    a {
+      color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="kicker">SI 649 · Narrative Visualization Draft</div>
+    <h1>How the NBA Changed Its Game</h1>
+    <div class="dek">
+      The modern NBA did not appear overnight. Rule changes opened the perimeter,
+      and then analytics and roster design turned that opening into a new style of basketball.
+    </div>
+    <div class="byline">
+      By Mustada A-Ogaili, Ali Al-Ogaili, Mohammad Farhat, and Lamonte Nunn
+    </div>
+
+    <div class="note">
+      <strong>Audience:</strong> This project is written for readers who know the basics of basketball
+      but may not follow advanced stats closely. Our goal is to explain <em>why</em> the game changed,
+      not just show that more threes are being taken.
+    </div>
+
+    <h2>What makes this project different</h2>
+    <p>
+      Sports visualizations often stop at a familiar conclusion: teams shoot more threes than they used to.
+      We want to push one step further. Our article argues that the style shift happened because the league
+      changed what kinds of offense were rewarded. Rule changes made it easier to attack from the perimeter,
+      and later, analytics made those shots easier to justify and teach.
+    </p>
+    <p>
+      To keep the project manageable, we are starting with league-level data that we can verify quickly.
+      If time allows, we can add a few player- or team-level examples later, but the main narrative already
+      works with the data in this draft.
+    </p>
+
+    <h2>1) The three-point line was added in 1979, but teams were slow to fully use it</h2>
+    <p>
+      The first chart shows the long rise of the three-point shot. For years the line was part of the court,
+      but not yet the center of offense. The big jumps come later, especially after teams started treating the
+      three as a normal part of half-court offense instead of a specialty shot.
+    </p>
+
+    <div id="chart1" class="chart"></div>
+    <script>
+    const spec_chart1 = {"$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "config": {"axis": {"gridColor": "#e6e6e6", "labelColor": "#333333", "labelFont": "Arial", "titleColor": "#333333", "titleFont": "Arial"}, "legend": {"labelColor": "#333333", "labelFont": "Arial", "titleColor": "#333333", "titleFont": "Arial"}, "title": {"color": "#222222", "font": "Arial"}, "view": {"continuousHeight": 300, "continuousWidth": 300, "stroke": null}}, "data": {"name": "data-32b5cca86b38d502f81f638898001048"}, "datasets": {"data-32b5cca86b38d502f81f638898001048": [{"era": "Before 2004 rule changes", "fg3_pct": 0.28, "fg3_pct_display": 28.0, "fg3a_pg": 2.8, "fga_pg": 85.8, "pace": 97.0, "pts_pg": 108.2, "season": "1979-80", "season_start": 1979, "three_share": 3.3}, {"era": "Before 2004 rule changes", "fg3_pct": 0.284, "fg3_pct_display": 28.4, "fg3a_pg": 3.3, "fga_pg": 86.4, "pace": 97.6, "pts_pg": 108.1, "season": "1980-81", "season_start": 1980, "three_share": 3.8}, {"era": "Before 2004 rule changes", "fg3_pct": 0.279, "fg3_pct_display": 27.9, "fg3a_pg": 2.9, "fga_pg": 85.7, "pace": 98.3, "pts_pg": 108.6, "season": "1981-82", "season_start": 1981, "three_share": 3.4}, {"era": "Before 2004 rule changes", "fg3_pct": 0.28, "fg3_pct_display": 28.0, "fg3a_pg": 3.0, "fga_pg": 86.8, "pace": 99.8, "pts_pg": 109.2, "season": "1982-83", "season_start": 1982, "three_share": 3.5}, {"era": "Before 2004 rule changes", "fg3_pct": 0.283, "fg3_pct_display": 28.3, "fg3a_pg": 3.2, "fga_pg": 87.8, "pace": 100.0, "pts_pg": 110.1, "season": "1983-84", "season_start": 1983, "three_share": 3.6}, {"era": "Before 2004 rule changes", "fg3_pct": 0.282, "fg3_pct_display": 28.2, "fg3a_pg": 3.4, "fga_pg": 88.9, "pace": 101.4, "pts_pg": 110.8, "season": "1984-85", "season_start": 1984, "three_share": 3.8}, {"era": "Before 2004 rule changes", "fg3_pct": 0.283, "fg3_pct_display": 28.3, "fg3a_pg": 3.6, "fga_pg": 88.3, "pace": 99.9, "pts_pg": 110.2, "season": "1985-86", "season_start": 1985, "three_share": 4.1}, {"era": "Before 2004 rule changes", "fg3_pct": 0.301, "fg3_pct_display": 30.1, "fg3a_pg": 4.0, "fga_pg": 88.2, "pace": 99.4, "pts_pg": 109.9, "season": "1986-87", "season_start": 1986, "three_share": 4.5}, {"era": "Before 2004 rule changes", "fg3_pct": 0.295, "fg3_pct_display": 29.5, "fg3a_pg": 4.5, "fga_pg": 87.0, "pace": 98.0, "pts_pg": 109.0, "season": "1987-88", "season_start": 1987, "three_share": 5.2}, {"era": "Before 2004 rule changes", "fg3_pct": 0.31, "fg3_pct_display": 31.0, "fg3a_pg": 5.1, "fga_pg": 87.8, "pace": 98.9, "pts_pg": 109.2, "season": "1988-89", "season_start": 1988, "three_share": 5.8}, {"era": "Before 2004 rule changes", "fg3_pct": 0.333, "fg3_pct_display": 33.3, "fg3a_pg": 5.3, "fga_pg": 85.8, "pace": 96.9, "pts_pg": 107.0, "season": "1989-90", "season_start": 1989, "three_share": 6.2}, {"era": "Before 2004 rule changes", "fg3_pct": 0.333, "fg3_pct_display": 33.3, "fg3a_pg": 6.0, "fga_pg": 86.2, "pace": 97.8, "pts_pg": 106.3, "season": "1990-91", "season_start": 1990, "three_share": 7.0}, {"era": "Before 2004 rule changes", "fg3_pct": 0.333, "fg3_pct_display": 33.3, "fg3a_pg": 6.3, "fga_pg": 85.8, "pace": 96.6, "pts_pg": 105.3, "season": "1991-92", "season_start": 1991, "three_share": 7.3}, {"era": "Before 2004 rule changes", "fg3_pct": 0.34, "fg3_pct_display": 34.0, "fg3a_pg": 7.1, "fga_pg": 86.5, "pace": 97.2, "pts_pg": 105.3, "season": "1992-93", "season_start": 1992, "three_share": 8.2}, {"era": "Before 2004 rule changes", "fg3_pct": 0.337, "fg3_pct_display": 33.7, "fg3a_pg": 7.4, "fga_pg": 83.5, "pace": 94.8, "pts_pg": 101.5, "season": "1993-94", "season_start": 1993, "three_share": 8.9}, {"era": "Before 2004 rule changes", "fg3_pct": 0.361, "fg3_pct_display": 36.1, "fg3a_pg": 11.6, "fga_pg": 84.8, "pace": 95.8, "pts_pg": 101.4, "season": "1994-95", "season_start": 1994, "three_share": 13.7}, {"era": "Before 2004 rule changes", "fg3_pct": 0.361, "fg3_pct_display": 36.1, "fg3a_pg": 14.9, "fga_pg": 84.3, "pace": 94.0, "pts_pg": 100.8, "season": "1995-96", "season_start": 1995, "three_share": 17.7}, {"era": "Before 2004 rule changes", "fg3_pct": 0.363, "fg3_pct_display": 36.3, "fg3a_pg": 15.4, "fga_pg": 84.8, "pace": 95.7, "pts_pg": 101.9, "season": "1996-97", "season_start": 1996, "three_share": 18.2}, {"era": "Before 2004 rule changes", "fg3_pct": 0.35, "fg3_pct_display": 35.0, "fg3a_pg": 11.1, "fga_pg": 82.1, "pace": 91.3, "pts_pg": 96.9, "season": "1997-98", "season_start": 1997, "three_share": 13.5}, {"era": "Before 2004 rule changes", "fg3_pct": 0.343, "fg3_pct_display": 34.3, "fg3a_pg": 9.9, "fga_pg": 78.0, "pace": 88.9, "pts_pg": 91.6, "season": "1998-99", "season_start": 1998, "three_share": 12.7}, {"era": "Before 2004 rule changes", "fg3_pct": 0.353, "fg3_pct_display": 35.3, "fg3a_pg": 13.0, "fga_pg": 82.2, "pace": 93.1, "pts_pg": 97.5, "season": "1999-00", "season_start": 1999, "three_share": 15.8}, {"era": "Before 2004 rule changes", "fg3_pct": 0.352, "fg3_pct_display": 35.2, "fg3a_pg": 13.7, "fga_pg": 80.7, "pace": 91.3, "pts_pg": 94.8, "season": "2000-01", "season_start": 2000, "three_share": 17.0}, {"era": "Before 2004 rule changes", "fg3_pct": 0.352, "fg3_pct_display": 35.2, "fg3a_pg": 14.0, "fga_pg": 81.1, "pace": 90.9, "pts_pg": 95.5, "season": "2001-02", "season_start": 2001, "three_share": 17.3}, {"era": "Before 2004 rule changes", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 14.9, "fga_pg": 80.8, "pace": 91.0, "pts_pg": 95.1, "season": "2002-03", "season_start": 2002, "three_share": 18.4}, {"era": "Before 2004 rule changes", "fg3_pct": 0.357, "fg3_pct_display": 35.7, "fg3a_pg": 14.9, "fga_pg": 80.2, "pace": 90.1, "pts_pg": 93.4, "season": "2003-04", "season_start": 2003, "three_share": 18.6}, {"era": "Transition years", "fg3_pct": 0.356, "fg3_pct_display": 35.6, "fg3a_pg": 16.3, "fga_pg": 81.7, "pace": 90.9, "pts_pg": 97.2, "season": "2004-05", "season_start": 2004, "three_share": 20.0}, {"era": "Transition years", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 17.2, "fga_pg": 82.0, "pace": 90.4, "pts_pg": 97.1, "season": "2005-06", "season_start": 2005, "three_share": 21.0}, {"era": "Transition years", "fg3_pct": 0.36, "fg3_pct_display": 36.0, "fg3a_pg": 17.3, "fga_pg": 83.0, "pace": 91.9, "pts_pg": 98.7, "season": "2006-07", "season_start": 2006, "three_share": 20.8}, {"era": "Transition years", "fg3_pct": 0.36, "fg3_pct_display": 36.0, "fg3a_pg": 18.1, "fga_pg": 83.7, "pace": 92.4, "pts_pg": 99.9, "season": "2007-08", "season_start": 2007, "three_share": 21.6}, {"era": "Transition years", "fg3_pct": 0.36, "fg3_pct_display": 36.0, "fg3a_pg": 18.0, "fga_pg": 82.2, "pace": 91.7, "pts_pg": 100.0, "season": "2008-09", "season_start": 2008, "three_share": 21.9}, {"era": "Transition years", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 18.0, "fga_pg": 82.7, "pace": 92.7, "pts_pg": 100.4, "season": "2009-10", "season_start": 2009, "three_share": 21.8}, {"era": "Transition years", "fg3_pct": 0.355, "fg3_pct_display": 35.5, "fg3a_pg": 18.0, "fga_pg": 82.6, "pace": 92.1, "pts_pg": 99.6, "season": "2010-11", "season_start": 2010, "three_share": 21.8}, {"era": "Transition years", "fg3_pct": 0.349, "fg3_pct_display": 34.9, "fg3a_pg": 18.4, "fga_pg": 81.3, "pace": 91.3, "pts_pg": 96.3, "season": "2011-12", "season_start": 2011, "three_share": 22.6}, {"era": "Transition years", "fg3_pct": 0.359, "fg3_pct_display": 35.9, "fg3a_pg": 19.4, "fga_pg": 82.5, "pace": 92.0, "pts_pg": 98.1, "season": "2012-13", "season_start": 2012, "three_share": 23.5}, {"era": "Transition years", "fg3_pct": 0.361, "fg3_pct_display": 36.1, "fg3a_pg": 20.0, "fga_pg": 83.9, "pace": 93.9, "pts_pg": 101.8, "season": "2013-14", "season_start": 2013, "three_share": 23.8}, {"era": "Transition years", "fg3_pct": 0.354, "fg3_pct_display": 35.4, "fg3a_pg": 22.4, "fga_pg": 84.6, "pace": 93.9, "pts_pg": 100.0, "season": "2014-15", "season_start": 2014, "three_share": 26.5}, {"era": "Modern spacing era", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 24.9, "fga_pg": 85.4, "pace": 95.8, "pts_pg": 104.6, "season": "2015-16", "season_start": 2015, "three_share": 29.2}, {"era": "Modern spacing era", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 27.0, "fga_pg": 85.4, "pace": 96.4, "pts_pg": 105.6, "season": "2016-17", "season_start": 2016, "three_share": 31.6}, {"era": "Modern spacing era", "fg3_pct": 0.362, "fg3_pct_display": 36.2, "fg3a_pg": 29.0, "fga_pg": 85.8, "pace": 97.3, "pts_pg": 106.3, "season": "2017-18", "season_start": 2017, "three_share": 33.8}, {"era": "Modern spacing era", "fg3_pct": 0.355, "fg3_pct_display": 35.5, "fg3a_pg": 32.0, "fga_pg": 88.3, "pace": 100.0, "pts_pg": 111.2, "season": "2018-19", "season_start": 2018, "three_share": 36.2}, {"era": "Modern spacing era", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 34.1, "fga_pg": 88.8, "pace": 100.0, "pts_pg": 111.8, "season": "2019-20", "season_start": 2019, "three_share": 38.4}, {"era": "Modern spacing era", "fg3_pct": 0.368, "fg3_pct_display": 36.8, "fg3a_pg": 34.6, "fga_pg": 88.4, "pace": 99.2, "pts_pg": 112.1, "season": "2020-21", "season_start": 2020, "three_share": 39.1}, {"era": "Modern spacing era", "fg3_pct": 0.354, "fg3_pct_display": 35.4, "fg3a_pg": 35.2, "fga_pg": 88.0, "pace": 98.2, "pts_pg": 112.5, "season": "2021-22", "season_start": 2021, "three_share": 40.0}, {"era": "Modern spacing era", "fg3_pct": 0.366, "fg3_pct_display": 36.6, "fg3a_pg": 34.2, "fga_pg": 88.7, "pace": 99.1, "pts_pg": 114.7, "season": "2022-23", "season_start": 2022, "three_share": 38.6}, {"era": "Modern spacing era", "fg3_pct": 0.364, "fg3_pct_display": 36.4, "fg3a_pg": 35.1, "fga_pg": 89.2, "pace": 99.9, "pts_pg": 114.3, "season": "2023-24", "season_start": 2023, "three_share": 39.3}], "data-895f3bb5a85fa38281cb07ce0fce6059": [{"fg3a_pg": 4.5, "label": "3-point line added", "season_start": 1979}, {"fg3a_pg": 14.5, "label": "line shortened", "season_start": 1995}, {"fg3a_pg": 12.0, "label": "line restored", "season_start": 1998}, {"fg3a_pg": 24.0, "label": "pace-and-space takes off", "season_start": 2015}]}, "height": 300, "layer": [{"encoding": {"tooltip": [{"field": "season", "title": "Season", "type": "nominal"}, {"field": "fg3a_pg", "title": "3PA/game", "type": "quantitative"}, {"field": "three_share", "title": "3PA share of all shots (%)", "type": "quantitative"}], "x": {"field": "season_start", "title": "Season", "type": "quantitative"}, "y": {"field": "fg3a_pg", "title": "Three-point attempts per game", "type": "quantitative"}}, "mark": {"color": "#2b6cb0", "strokeWidth": 3, "type": "line"}, "name": "view_ab0e1a4ee838a8ed_0"}, {"encoding": {"opacity": {"condition": {"empty": false, "param": "param_ee2f3262af98fc44", "value": 1}, "value": 0}, "tooltip": [{"field": "season", "title": "Season", "type": "nominal"}, {"field": "fg3a_pg", "title": "3PA/game", "type": "quantitative"}, {"field": "three_share", "title": "3PA share of all shots (%)", "type": "quantitative"}], "x": {"field": "season_start", "title": "Season", "type": "quantitative"}, "y": {"field": "fg3a_pg", "title": "Three-point attempts per game", "type": "quantitative"}}, "mark": {"size": 55, "type": "circle"}}, {"encoding": {"x": {"field": "season_start", "type": "quantitative"}}, "mark": {"color": "#999999", "type": "rule"}, "transform": [{"filter": {"empty": false, "param": "param_ee2f3262af98fc44"}}]}, {"data": {"name": "data-895f3bb5a85fa38281cb07ce0fce6059"}, "encoding": {"text": {"field": "label", "type": "nominal"}, "x": {"field": "season_start", "type": "quantitative"}, "y": {"field": "fg3a_pg", "type": "quantitative"}}, "mark": {"align": "left", "color": "#555555", "dx": 6, "dy": -8, "fontSize": 11, "type": "text"}}], "params": [{"name": "param_ee2f3262af98fc44", "select": {"fields": ["season"], "nearest": true, "on": "mouseover", "type": "point"}, "views": ["view_ab0e1a4ee838a8ed_0"]}], "title": "Chart 1. The three-point shot went from novelty to default offense", "width": 720};
+    vegaEmbed('#chart1', spec_chart1, {actions: false});
+    </script>
+
+    <p class="small">
+      This chart uses league averages from Basketball-Reference. The labels mark a few historical checkpoints,
+      but our larger point is that adoption was gradual and then suddenly accelerated.
+    </p>
+
+    <h2>2) The early 2000s were a low point for pace and scoring</h2>
+    <p>
+      The second chart focuses on the slow, low-scoring stretch in the early 2000s. Instead of saying one single
+      rule changed everything, we are using this section to show that style is partly shaped by incentives.
+      Once the league became friendlier to perimeter offense, the game opened up again.
+    </p>
+
+    <div id="chart2" class="chart"></div>
+    <script>
+    const spec_chart2 = {"$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "config": {"axis": {"gridColor": "#e6e6e6", "labelColor": "#333333", "labelFont": "Arial", "titleColor": "#333333", "titleFont": "Arial"}, "legend": {"labelColor": "#333333", "labelFont": "Arial", "titleColor": "#333333", "titleFont": "Arial"}, "title": {"color": "#222222", "font": "Arial"}, "view": {"continuousHeight": 300, "continuousWidth": 300, "stroke": null}}, "data": {"name": "data-f48c73101a7e3ec271b49f4c854243c4"}, "datasets": {"data-f48c73101a7e3ec271b49f4c854243c4": [{"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1979-80", "season_start": 1979, "value": 97.0}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1980-81", "season_start": 1980, "value": 97.6}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1981-82", "season_start": 1981, "value": 98.3}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1982-83", "season_start": 1982, "value": 99.8}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1983-84", "season_start": 1983, "value": 100.0}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1984-85", "season_start": 1984, "value": 101.4}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1985-86", "season_start": 1985, "value": 99.9}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1986-87", "season_start": 1986, "value": 99.4}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1987-88", "season_start": 1987, "value": 98.0}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1988-89", "season_start": 1988, "value": 98.9}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1989-90", "season_start": 1989, "value": 96.9}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1990-91", "season_start": 1990, "value": 97.8}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1991-92", "season_start": 1991, "value": 96.6}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1992-93", "season_start": 1992, "value": 97.2}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1993-94", "season_start": 1993, "value": 94.8}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1994-95", "season_start": 1994, "value": 95.8}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1995-96", "season_start": 1995, "value": 94.0}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1996-97", "season_start": 1996, "value": 95.7}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1997-98", "season_start": 1997, "value": 91.3}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1998-99", "season_start": 1998, "value": 88.9}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "1999-00", "season_start": 1999, "value": 93.1}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2000-01", "season_start": 2000, "value": 91.3}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2001-02", "season_start": 2001, "value": 90.9}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2002-03", "season_start": 2002, "value": 91.0}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2003-04", "season_start": 2003, "value": 90.1}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2004-05", "season_start": 2004, "value": 90.9}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2005-06", "season_start": 2005, "value": 90.4}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2006-07", "season_start": 2006, "value": 91.9}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2007-08", "season_start": 2007, "value": 92.4}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2008-09", "season_start": 2008, "value": 91.7}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2009-10", "season_start": 2009, "value": 92.7}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2010-11", "season_start": 2010, "value": 92.1}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2011-12", "season_start": 2011, "value": 91.3}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2012-13", "season_start": 2012, "value": 92.0}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2013-14", "season_start": 2013, "value": 93.9}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2014-15", "season_start": 2014, "value": 93.9}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2015-16", "season_start": 2015, "value": 95.8}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2016-17", "season_start": 2016, "value": 96.4}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2017-18", "season_start": 2017, "value": 97.3}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2018-19", "season_start": 2018, "value": 100.0}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2019-20", "season_start": 2019, "value": 100.0}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2020-21", "season_start": 2020, "value": 99.2}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2021-22", "season_start": 2021, "value": 98.2}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2022-23", "season_start": 2022, "value": 99.1}, {"metric": "pace", "metric_label": "Pace (possessions per 48)", "season": "2023-24", "season_start": 2023, "value": 99.9}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1979-80", "season_start": 1979, "value": 108.2}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1980-81", "season_start": 1980, "value": 108.1}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1981-82", "season_start": 1981, "value": 108.6}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1982-83", "season_start": 1982, "value": 109.2}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1983-84", "season_start": 1983, "value": 110.1}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1984-85", "season_start": 1984, "value": 110.8}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1985-86", "season_start": 1985, "value": 110.2}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1986-87", "season_start": 1986, "value": 109.9}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1987-88", "season_start": 1987, "value": 109.0}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1988-89", "season_start": 1988, "value": 109.2}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1989-90", "season_start": 1989, "value": 107.0}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1990-91", "season_start": 1990, "value": 106.3}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1991-92", "season_start": 1991, "value": 105.3}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1992-93", "season_start": 1992, "value": 105.3}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1993-94", "season_start": 1993, "value": 101.5}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1994-95", "season_start": 1994, "value": 101.4}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1995-96", "season_start": 1995, "value": 100.8}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1996-97", "season_start": 1996, "value": 101.9}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1997-98", "season_start": 1997, "value": 96.9}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1998-99", "season_start": 1998, "value": 91.6}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "1999-00", "season_start": 1999, "value": 97.5}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2000-01", "season_start": 2000, "value": 94.8}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2001-02", "season_start": 2001, "value": 95.5}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2002-03", "season_start": 2002, "value": 95.1}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2003-04", "season_start": 2003, "value": 93.4}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2004-05", "season_start": 2004, "value": 97.2}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2005-06", "season_start": 2005, "value": 97.1}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2006-07", "season_start": 2006, "value": 98.7}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2007-08", "season_start": 2007, "value": 99.9}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2008-09", "season_start": 2008, "value": 100.0}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2009-10", "season_start": 2009, "value": 100.4}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2010-11", "season_start": 2010, "value": 99.6}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2011-12", "season_start": 2011, "value": 96.3}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2012-13", "season_start": 2012, "value": 98.1}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2013-14", "season_start": 2013, "value": 101.8}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2014-15", "season_start": 2014, "value": 100.0}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2015-16", "season_start": 2015, "value": 104.6}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2016-17", "season_start": 2016, "value": 105.6}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2017-18", "season_start": 2017, "value": 106.3}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2018-19", "season_start": 2018, "value": 111.2}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2019-20", "season_start": 2019, "value": 111.8}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2020-21", "season_start": 2020, "value": 112.1}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2021-22", "season_start": 2021, "value": 112.5}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2022-23", "season_start": 2022, "value": 114.7}, {"metric": "pts_pg", "metric_label": "Points per game", "season": "2023-24", "season_start": 2023, "value": 114.3}]}, "encoding": {"color": {"field": "metric_label", "legend": null, "scale": {"domain": ["Pace (possessions per 48)", "Points per game"], "range": ["#1f9d8a", "#d97706"]}, "type": "nominal"}, "tooltip": [{"field": "season", "title": "Season", "type": "nominal"}, {"field": "metric_label", "title": "Metric", "type": "nominal"}, {"field": "value", "title": "Value", "type": "quantitative"}], "x": {"field": "season_start", "title": "Season", "type": "quantitative"}, "y": {"field": "value", "title": "Value", "type": "quantitative"}}, "height": 300, "mark": {"strokeWidth": 3, "type": "line"}, "params": [{"bind": {"input": "radio", "name": "Show: ", "options": ["Pace (possessions per 48)", "Points per game"]}, "name": "param_4c6b9f08b3bbd7a4", "select": {"fields": ["metric_label"], "type": "point"}, "value": "Points per game"}], "title": "Chart 2. The dead-ball low point in the early 2000s did not last", "transform": [{"filter": {"param": "param_4c6b9f08b3bbd7a4"}}], "width": 720};
+    vegaEmbed('#chart2', spec_chart2, {actions: false});
+    </script>
+
+    <p class="small">
+      Use the radio button above the chart to switch between points per game and pace.
+      This keeps the interaction simple and readable.
+    </p>
+
+    <h2>3) Accuracy stayed fairly steady, but volume kept climbing</h2>
+    <p>
+      One reason the modern game feels so different is that teams did not wait for three-point percentage to explode.
+      Instead, they kept increasing volume. That is part of the analytics story: even a similar percentage can become
+      more valuable if the shot is worth an extra point and creates more spacing.
+    </p>
+
+    <div id="chart3" class="chart"></div>
+    <script>
+    const spec_chart3 = {"$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "config": {"axis": {"gridColor": "#e6e6e6", "labelColor": "#333333", "labelFont": "Arial", "titleColor": "#333333", "titleFont": "Arial"}, "legend": {"labelColor": "#333333", "labelFont": "Arial", "titleColor": "#333333", "titleFont": "Arial"}, "title": {"color": "#222222", "font": "Arial"}, "view": {"continuousHeight": 300, "continuousWidth": 300, "stroke": null}}, "data": {"name": "data-32b5cca86b38d502f81f638898001048"}, "datasets": {"data-32b5cca86b38d502f81f638898001048": [{"era": "Before 2004 rule changes", "fg3_pct": 0.28, "fg3_pct_display": 28.0, "fg3a_pg": 2.8, "fga_pg": 85.8, "pace": 97.0, "pts_pg": 108.2, "season": "1979-80", "season_start": 1979, "three_share": 3.3}, {"era": "Before 2004 rule changes", "fg3_pct": 0.284, "fg3_pct_display": 28.4, "fg3a_pg": 3.3, "fga_pg": 86.4, "pace": 97.6, "pts_pg": 108.1, "season": "1980-81", "season_start": 1980, "three_share": 3.8}, {"era": "Before 2004 rule changes", "fg3_pct": 0.279, "fg3_pct_display": 27.9, "fg3a_pg": 2.9, "fga_pg": 85.7, "pace": 98.3, "pts_pg": 108.6, "season": "1981-82", "season_start": 1981, "three_share": 3.4}, {"era": "Before 2004 rule changes", "fg3_pct": 0.28, "fg3_pct_display": 28.0, "fg3a_pg": 3.0, "fga_pg": 86.8, "pace": 99.8, "pts_pg": 109.2, "season": "1982-83", "season_start": 1982, "three_share": 3.5}, {"era": "Before 2004 rule changes", "fg3_pct": 0.283, "fg3_pct_display": 28.3, "fg3a_pg": 3.2, "fga_pg": 87.8, "pace": 100.0, "pts_pg": 110.1, "season": "1983-84", "season_start": 1983, "three_share": 3.6}, {"era": "Before 2004 rule changes", "fg3_pct": 0.282, "fg3_pct_display": 28.2, "fg3a_pg": 3.4, "fga_pg": 88.9, "pace": 101.4, "pts_pg": 110.8, "season": "1984-85", "season_start": 1984, "three_share": 3.8}, {"era": "Before 2004 rule changes", "fg3_pct": 0.283, "fg3_pct_display": 28.3, "fg3a_pg": 3.6, "fga_pg": 88.3, "pace": 99.9, "pts_pg": 110.2, "season": "1985-86", "season_start": 1985, "three_share": 4.1}, {"era": "Before 2004 rule changes", "fg3_pct": 0.301, "fg3_pct_display": 30.1, "fg3a_pg": 4.0, "fga_pg": 88.2, "pace": 99.4, "pts_pg": 109.9, "season": "1986-87", "season_start": 1986, "three_share": 4.5}, {"era": "Before 2004 rule changes", "fg3_pct": 0.295, "fg3_pct_display": 29.5, "fg3a_pg": 4.5, "fga_pg": 87.0, "pace": 98.0, "pts_pg": 109.0, "season": "1987-88", "season_start": 1987, "three_share": 5.2}, {"era": "Before 2004 rule changes", "fg3_pct": 0.31, "fg3_pct_display": 31.0, "fg3a_pg": 5.1, "fga_pg": 87.8, "pace": 98.9, "pts_pg": 109.2, "season": "1988-89", "season_start": 1988, "three_share": 5.8}, {"era": "Before 2004 rule changes", "fg3_pct": 0.333, "fg3_pct_display": 33.3, "fg3a_pg": 5.3, "fga_pg": 85.8, "pace": 96.9, "pts_pg": 107.0, "season": "1989-90", "season_start": 1989, "three_share": 6.2}, {"era": "Before 2004 rule changes", "fg3_pct": 0.333, "fg3_pct_display": 33.3, "fg3a_pg": 6.0, "fga_pg": 86.2, "pace": 97.8, "pts_pg": 106.3, "season": "1990-91", "season_start": 1990, "three_share": 7.0}, {"era": "Before 2004 rule changes", "fg3_pct": 0.333, "fg3_pct_display": 33.3, "fg3a_pg": 6.3, "fga_pg": 85.8, "pace": 96.6, "pts_pg": 105.3, "season": "1991-92", "season_start": 1991, "three_share": 7.3}, {"era": "Before 2004 rule changes", "fg3_pct": 0.34, "fg3_pct_display": 34.0, "fg3a_pg": 7.1, "fga_pg": 86.5, "pace": 97.2, "pts_pg": 105.3, "season": "1992-93", "season_start": 1992, "three_share": 8.2}, {"era": "Before 2004 rule changes", "fg3_pct": 0.337, "fg3_pct_display": 33.7, "fg3a_pg": 7.4, "fga_pg": 83.5, "pace": 94.8, "pts_pg": 101.5, "season": "1993-94", "season_start": 1993, "three_share": 8.9}, {"era": "Before 2004 rule changes", "fg3_pct": 0.361, "fg3_pct_display": 36.1, "fg3a_pg": 11.6, "fga_pg": 84.8, "pace": 95.8, "pts_pg": 101.4, "season": "1994-95", "season_start": 1994, "three_share": 13.7}, {"era": "Before 2004 rule changes", "fg3_pct": 0.361, "fg3_pct_display": 36.1, "fg3a_pg": 14.9, "fga_pg": 84.3, "pace": 94.0, "pts_pg": 100.8, "season": "1995-96", "season_start": 1995, "three_share": 17.7}, {"era": "Before 2004 rule changes", "fg3_pct": 0.363, "fg3_pct_display": 36.3, "fg3a_pg": 15.4, "fga_pg": 84.8, "pace": 95.7, "pts_pg": 101.9, "season": "1996-97", "season_start": 1996, "three_share": 18.2}, {"era": "Before 2004 rule changes", "fg3_pct": 0.35, "fg3_pct_display": 35.0, "fg3a_pg": 11.1, "fga_pg": 82.1, "pace": 91.3, "pts_pg": 96.9, "season": "1997-98", "season_start": 1997, "three_share": 13.5}, {"era": "Before 2004 rule changes", "fg3_pct": 0.343, "fg3_pct_display": 34.3, "fg3a_pg": 9.9, "fga_pg": 78.0, "pace": 88.9, "pts_pg": 91.6, "season": "1998-99", "season_start": 1998, "three_share": 12.7}, {"era": "Before 2004 rule changes", "fg3_pct": 0.353, "fg3_pct_display": 35.3, "fg3a_pg": 13.0, "fga_pg": 82.2, "pace": 93.1, "pts_pg": 97.5, "season": "1999-00", "season_start": 1999, "three_share": 15.8}, {"era": "Before 2004 rule changes", "fg3_pct": 0.352, "fg3_pct_display": 35.2, "fg3a_pg": 13.7, "fga_pg": 80.7, "pace": 91.3, "pts_pg": 94.8, "season": "2000-01", "season_start": 2000, "three_share": 17.0}, {"era": "Before 2004 rule changes", "fg3_pct": 0.352, "fg3_pct_display": 35.2, "fg3a_pg": 14.0, "fga_pg": 81.1, "pace": 90.9, "pts_pg": 95.5, "season": "2001-02", "season_start": 2001, "three_share": 17.3}, {"era": "Before 2004 rule changes", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 14.9, "fga_pg": 80.8, "pace": 91.0, "pts_pg": 95.1, "season": "2002-03", "season_start": 2002, "three_share": 18.4}, {"era": "Before 2004 rule changes", "fg3_pct": 0.357, "fg3_pct_display": 35.7, "fg3a_pg": 14.9, "fga_pg": 80.2, "pace": 90.1, "pts_pg": 93.4, "season": "2003-04", "season_start": 2003, "three_share": 18.6}, {"era": "Transition years", "fg3_pct": 0.356, "fg3_pct_display": 35.6, "fg3a_pg": 16.3, "fga_pg": 81.7, "pace": 90.9, "pts_pg": 97.2, "season": "2004-05", "season_start": 2004, "three_share": 20.0}, {"era": "Transition years", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 17.2, "fga_pg": 82.0, "pace": 90.4, "pts_pg": 97.1, "season": "2005-06", "season_start": 2005, "three_share": 21.0}, {"era": "Transition years", "fg3_pct": 0.36, "fg3_pct_display": 36.0, "fg3a_pg": 17.3, "fga_pg": 83.0, "pace": 91.9, "pts_pg": 98.7, "season": "2006-07", "season_start": 2006, "three_share": 20.8}, {"era": "Transition years", "fg3_pct": 0.36, "fg3_pct_display": 36.0, "fg3a_pg": 18.1, "fga_pg": 83.7, "pace": 92.4, "pts_pg": 99.9, "season": "2007-08", "season_start": 2007, "three_share": 21.6}, {"era": "Transition years", "fg3_pct": 0.36, "fg3_pct_display": 36.0, "fg3a_pg": 18.0, "fga_pg": 82.2, "pace": 91.7, "pts_pg": 100.0, "season": "2008-09", "season_start": 2008, "three_share": 21.9}, {"era": "Transition years", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 18.0, "fga_pg": 82.7, "pace": 92.7, "pts_pg": 100.4, "season": "2009-10", "season_start": 2009, "three_share": 21.8}, {"era": "Transition years", "fg3_pct": 0.355, "fg3_pct_display": 35.5, "fg3a_pg": 18.0, "fga_pg": 82.6, "pace": 92.1, "pts_pg": 99.6, "season": "2010-11", "season_start": 2010, "three_share": 21.8}, {"era": "Transition years", "fg3_pct": 0.349, "fg3_pct_display": 34.9, "fg3a_pg": 18.4, "fga_pg": 81.3, "pace": 91.3, "pts_pg": 96.3, "season": "2011-12", "season_start": 2011, "three_share": 22.6}, {"era": "Transition years", "fg3_pct": 0.359, "fg3_pct_display": 35.9, "fg3a_pg": 19.4, "fga_pg": 82.5, "pace": 92.0, "pts_pg": 98.1, "season": "2012-13", "season_start": 2012, "three_share": 23.5}, {"era": "Transition years", "fg3_pct": 0.361, "fg3_pct_display": 36.1, "fg3a_pg": 20.0, "fga_pg": 83.9, "pace": 93.9, "pts_pg": 101.8, "season": "2013-14", "season_start": 2013, "three_share": 23.8}, {"era": "Transition years", "fg3_pct": 0.354, "fg3_pct_display": 35.4, "fg3a_pg": 22.4, "fga_pg": 84.6, "pace": 93.9, "pts_pg": 100.0, "season": "2014-15", "season_start": 2014, "three_share": 26.5}, {"era": "Modern spacing era", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 24.9, "fga_pg": 85.4, "pace": 95.8, "pts_pg": 104.6, "season": "2015-16", "season_start": 2015, "three_share": 29.2}, {"era": "Modern spacing era", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 27.0, "fga_pg": 85.4, "pace": 96.4, "pts_pg": 105.6, "season": "2016-17", "season_start": 2016, "three_share": 31.6}, {"era": "Modern spacing era", "fg3_pct": 0.362, "fg3_pct_display": 36.2, "fg3a_pg": 29.0, "fga_pg": 85.8, "pace": 97.3, "pts_pg": 106.3, "season": "2017-18", "season_start": 2017, "three_share": 33.8}, {"era": "Modern spacing era", "fg3_pct": 0.355, "fg3_pct_display": 35.5, "fg3a_pg": 32.0, "fga_pg": 88.3, "pace": 100.0, "pts_pg": 111.2, "season": "2018-19", "season_start": 2018, "three_share": 36.2}, {"era": "Modern spacing era", "fg3_pct": 0.358, "fg3_pct_display": 35.8, "fg3a_pg": 34.1, "fga_pg": 88.8, "pace": 100.0, "pts_pg": 111.8, "season": "2019-20", "season_start": 2019, "three_share": 38.4}, {"era": "Modern spacing era", "fg3_pct": 0.368, "fg3_pct_display": 36.8, "fg3a_pg": 34.6, "fga_pg": 88.4, "pace": 99.2, "pts_pg": 112.1, "season": "2020-21", "season_start": 2020, "three_share": 39.1}, {"era": "Modern spacing era", "fg3_pct": 0.354, "fg3_pct_display": 35.4, "fg3a_pg": 35.2, "fga_pg": 88.0, "pace": 98.2, "pts_pg": 112.5, "season": "2021-22", "season_start": 2021, "three_share": 40.0}, {"era": "Modern spacing era", "fg3_pct": 0.366, "fg3_pct_display": 36.6, "fg3a_pg": 34.2, "fga_pg": 88.7, "pace": 99.1, "pts_pg": 114.7, "season": "2022-23", "season_start": 2022, "three_share": 38.6}, {"era": "Modern spacing era", "fg3_pct": 0.364, "fg3_pct_display": 36.4, "fg3a_pg": 35.1, "fga_pg": 89.2, "pace": 99.9, "pts_pg": 114.3, "season": "2023-24", "season_start": 2023, "three_share": 39.3}]}, "height": 300, "layer": [{"encoding": {"opacity": {"condition": {"param": "param_be878a792c41a340", "value": 1}, "value": 0.18}, "tooltip": [{"field": "season", "title": "Season", "type": "nominal"}, {"field": "fg3a_pg", "title": "3PA/game", "type": "quantitative"}, {"field": "fg3_pct_display", "title": "3P%", "type": "quantitative"}, {"field": "era", "title": "Era", "type": "nominal"}], "x": {"field": "fg3a_pg", "title": "3PA per game", "type": "quantitative"}, "y": {"field": "fg3_pct_display", "title": "3-point percentage", "type": "quantitative"}}, "mark": {"color": "#7c3aed", "size": 90, "type": "circle"}, "name": "view_298556f50730b315_0"}, {"encoding": {"detail": {"field": "era", "type": "nominal"}, "x": {"field": "fg3a_pg", "type": "quantitative"}, "y": {"field": "fg3_pct_display", "type": "quantitative"}}, "mark": {"color": "#c084fc", "strokeDash": [5, 5], "type": "line"}, "transform": [{"filter": {"param": "param_be878a792c41a340"}}]}], "params": [{"bind": {"input": "select", "name": "Focus era: ", "options": ["Before 2004 rule changes", "Modern spacing era", "Transition years"]}, "name": "param_be878a792c41a340", "select": {"fields": ["era"], "type": "point"}, "value": "Modern spacing era", "views": ["view_298556f50730b315_0"]}], "title": "Chart 3. Teams kept shooting more threes even when accuracy stayed fairly stable", "width": 720};
+    vegaEmbed('#chart3', spec_chart3, {actions: false});
+    </script>
+
+    <p class="small">
+      This view lets the reader focus on one broad era at a time.
+    </p>
+
+    <h2>4) Positions became more flexible</h2>
+    <p>
+      Our last chart is a supporting comparison. It is not the main proof of the article, but it helps connect the
+      earlier league trends to something readers can picture on the court. If every position is expected to shoot and
+      move in space, then the old position labels start to matter less.
+    </p>
+
+    <div id="chart4" class="chart"></div>
+    <script>
+    const spec_chart4 = {"$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "config": {"axis": {"gridColor": "#e6e6e6", "labelColor": "#333333", "labelFont": "Arial", "titleColor": "#333333", "titleFont": "Arial"}, "legend": {"labelColor": "#333333", "labelFont": "Arial", "titleColor": "#333333", "titleFont": "Arial"}, "title": {"color": "#222222", "font": "Arial"}, "view": {"continuousHeight": 300, "continuousWidth": 300, "stroke": null}}, "data": {"name": "data-aa5371807592b10ee726b468adb45a17"}, "datasets": {"data-aa5371807592b10ee726b468adb45a17": [{"era": "1990s", "fg3a_pg": 3.8, "position": "Point Guard"}, {"era": "1990s", "fg3a_pg": 2.9, "position": "Shooting Guard"}, {"era": "1990s", "fg3a_pg": 1.1, "position": "Small Forward"}, {"era": "1990s", "fg3a_pg": 0.4, "position": "Power Forward"}, {"era": "1990s", "fg3a_pg": 0.0, "position": "Center"}, {"era": "2010s", "fg3a_pg": 5.2, "position": "Point Guard"}, {"era": "2010s", "fg3a_pg": 4.8, "position": "Shooting Guard"}, {"era": "2010s", "fg3a_pg": 3.2, "position": "Small Forward"}, {"era": "2010s", "fg3a_pg": 1.8, "position": "Power Forward"}, {"era": "2010s", "fg3a_pg": 0.3, "position": "Center"}, {"era": "2020s", "fg3a_pg": 8.1, "position": "Point Guard"}, {"era": "2020s", "fg3a_pg": 7.4, "position": "Shooting Guard"}, {"era": "2020s", "fg3a_pg": 6.1, "position": "Small Forward"}, {"era": "2020s", "fg3a_pg": 4.2, "position": "Power Forward"}, {"era": "2020s", "fg3a_pg": 2.9, "position": "Center"}]}, "encoding": {"color": {"field": "era", "scale": {"domain": ["1990s", "2010s", "2020s"], "range": ["#c7d2fe", "#60a5fa", "#1d4ed8"]}, "title": "Era", "type": "nominal"}, "tooltip": [{"field": "era", "title": "Era", "type": "nominal"}, {"field": "position", "title": "Position", "type": "nominal"}, {"field": "fg3a_pg", "title": "3PA/game", "type": "quantitative"}], "x": {"field": "position", "sort": ["Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"], "title": "Position", "type": "nominal"}, "xOffset": {"field": "era", "type": "nominal"}, "y": {"field": "fg3a_pg", "title": "Approx. three-point attempts per game", "type": "quantitative"}}, "height": 300, "mark": {"type": "bar"}, "title": "Chart 4. The job description of every position moved outward", "width": 720};
+    vegaEmbed('#chart4', spec_chart4, {actions: false});
+    </script>
+
+    <p class="small">
+      These position values are rough era-level comparison values for the draft. In the final version,
+      we can either keep this as a broad illustration or replace it with a cleaner sourced positional table.
+    </p>
+
+    <h2>Conclusion</h2>
+    <p>
+      The easiest way to describe the modern NBA is to say that players just got smarter and started shooting more threes.
+      But that explanation is incomplete. The game changed because rules, strategy, and player development all pushed in the
+      same direction. The result was not just more threes. It was a different idea of what good offense looks like.
+    </p>
+
+    <h2>Works cited / source list</h2>
+    <ul class="refs">
+      <li>
+        Basketball-Reference. <em>NBA League Averages - Per Game</em>.
+        <a href="https://www.basketball-reference.com/leagues/NBA_stats_per_game.html">https://www.basketball-reference.com/leagues/NBA_stats_per_game.html</a>
+      </li>
+      <li>
+        Basketball-Reference. <em>NBA League Averages - Advanced Stats</em>.
+        <a href="https://www.basketball-reference.com/leagues/NBA_stats_advanced.html">https://www.basketball-reference.com/leagues/NBA_stats_advanced.html</a>
+      </li>
+      <li>
+        NBA.com. <em>This Day in History: Oct. 12 - The first 3-point field goal</em>.
+        <a href="https://www.nba.com/news/this-day-in-history-oct-12-the-first-3-point-field-goal">https://www.nba.com/news/this-day-in-history-oct-12-the-first-3-point-field-goal</a>
+      </li>
+      <li>
+        NBA Video Rulebook. <em>Handcheck</em>.
+        <a href="https://videorulebook.nba.com/rule/handcheck/">https://videorulebook.nba.com/rule/handcheck/</a>
+      </li>
+      <li>
+        Skinner, Brian. 2012. <em>The Problem of Shot Selection in Basketball</em>.
+        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3266291/">https://pmc.ncbi.nlm.nih.gov/articles/PMC3266291/</a>
+      </li>
+      <li>
+        Zając, T. et al. 2023. <em>Long-Term Trends in Shooting Performance in the NBA</em>.
+        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9915101/">https://pmc.ncbi.nlm.nih.gov/articles/PMC9915101/</a>
+      </li>
+    </ul>
+
+    <div class="footer">
+      Draft built in one Python file with Altair. Intended for GitHub Pages as a single HTML page.
+    </div>
+  </div>
+</body>
+</html>
