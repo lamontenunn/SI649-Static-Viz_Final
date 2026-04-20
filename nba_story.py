@@ -1,23 +1,20 @@
 """
-SI 649 Narrative Visualization Project Draft
+SI 649 Narrative Visualization Project
 
-This script builds one single HTML page for our NBA narrative visualization.
-We kept it intentionally simple:
-- one Python file
-- data written directly in the file
-- Altair for the charts
-- output is one index.html that can be uploaded to GitHub Pages
+Builds a single index.html narrative that explains how the NBA's playstyle has
+shifted across a half-century of rule changes and analytics adoption.
 
-How to run locally:
+Data lives in /data as CSVs sourced from Basketball-Reference:
+    data/league_seasons.csv      per-season league averages, 1979-80 -> 2023-24
+    data/shot_zones.csv          per-season shot-zone share of FGA, 1996-97+
+    data/position_shooting.csv   per-position 3PA, 3P%, TS% by decade
+
+How to run:
     pip install altair pandas
-    python nba_story_altair.py
+    python nba_story.py
 
-What it makes:
-    index.html
-
-Notes:
-- We are using league-level data first because it is easier to verify and
-  helps us avoid data-cleaning problems too late in the semester.
+Output:
+    index.html   (uploadable as-is to GitHub Pages)
 """
 
 from pathlib import Path
@@ -27,108 +24,29 @@ import altair as alt
 import pandas as pd
 
 
-# -----------------------------
-# Core league data
-# -----------------------------
-# Source: Basketball-Reference league averages
-# https://www.basketball-reference.com/leagues/NBA_stats_per_game.html
-# https://www.basketball-reference.com/leagues/NBA_stats_advanced.html
-RAW = [
-    ("1979-80", 108.2, 2.8, 85.8, 97.0, 0.280),
-    ("1980-81", 108.1, 3.3, 86.4, 97.6, 0.284),
-    ("1981-82", 108.6, 2.9, 85.7, 98.3, 0.279),
-    ("1982-83", 109.2, 3.0, 86.8, 99.8, 0.280),
-    ("1983-84", 110.1, 3.2, 87.8, 100.0, 0.283),
-    ("1984-85", 110.8, 3.4, 88.9, 101.4, 0.282),
-    ("1985-86", 110.2, 3.6, 88.3, 99.9, 0.283),
-    ("1986-87", 109.9, 4.0, 88.2, 99.4, 0.301),
-    ("1987-88", 109.0, 4.5, 87.0, 98.0, 0.295),
-    ("1988-89", 109.2, 5.1, 87.8, 98.9, 0.310),
-    ("1989-90", 107.0, 5.3, 85.8, 96.9, 0.333),
-    ("1990-91", 106.3, 6.0, 86.2, 97.8, 0.333),
-    ("1991-92", 105.3, 6.3, 85.8, 96.6, 0.333),
-    ("1992-93", 105.3, 7.1, 86.5, 97.2, 0.340),
-    ("1993-94", 101.5, 7.4, 83.5, 94.8, 0.337),
-    ("1994-95", 101.4, 11.6, 84.8, 95.8, 0.361),
-    ("1995-96", 100.8, 14.9, 84.3, 94.0, 0.361),
-    ("1996-97", 101.9, 15.4, 84.8, 95.7, 0.363),
-    ("1997-98", 96.9, 11.1, 82.1, 91.3, 0.350),
-    ("1998-99", 91.6, 9.9, 78.0, 88.9, 0.343),
-    ("1999-00", 97.5, 13.0, 82.2, 93.1, 0.353),
-    ("2000-01", 94.8, 13.7, 80.7, 91.3, 0.352),
-    ("2001-02", 95.5, 14.0, 81.1, 90.9, 0.352),
-    ("2002-03", 95.1, 14.9, 80.8, 91.0, 0.358),
-    ("2003-04", 93.4, 14.9, 80.2, 90.1, 0.357),
-    ("2004-05", 97.2, 16.3, 81.7, 90.9, 0.356),
-    ("2005-06", 97.1, 17.2, 82.0, 90.4, 0.358),
-    ("2006-07", 98.7, 17.3, 83.0, 91.9, 0.360),
-    ("2007-08", 99.9, 18.1, 83.7, 92.4, 0.360),
-    ("2008-09", 100.0, 18.0, 82.2, 91.7, 0.360),
-    ("2009-10", 100.4, 18.0, 82.7, 92.7, 0.358),
-    ("2010-11", 99.6, 18.0, 82.6, 92.1, 0.355),
-    ("2011-12", 96.3, 18.4, 81.3, 91.3, 0.349),
-    ("2012-13", 98.1, 19.4, 82.5, 92.0, 0.359),
-    ("2013-14", 101.8, 20.0, 83.9, 93.9, 0.361),
-    ("2014-15", 100.0, 22.4, 84.6, 93.9, 0.354),
-    ("2015-16", 104.6, 24.9, 85.4, 95.8, 0.358),
-    ("2016-17", 105.6, 27.0, 85.4, 96.4, 0.358),
-    ("2017-18", 106.3, 29.0, 85.8, 97.3, 0.362),
-    ("2018-19", 111.2, 32.0, 88.3, 100.0, 0.355),
-    ("2019-20", 111.8, 34.1, 88.8, 100.0, 0.358),
-    ("2020-21", 112.1, 34.6, 88.4, 99.2, 0.368),
-    ("2021-22", 112.5, 35.2, 88.0, 98.2, 0.354),
-    ("2022-23", 114.7, 34.2, 88.7, 99.1, 0.366),
-    ("2023-24", 114.3, 35.1, 89.2, 99.9, 0.364),
-]
+DATA_DIR = Path(__file__).parent / "data"
 
-league = pd.DataFrame(
-    RAW,
-    columns=["season", "pts_pg", "fg3a_pg", "fga_pg", "pace", "fg3_pct"],
-)
-league["season_start"] = league["season"].str[:4].astype(int)
+league = pd.read_csv(DATA_DIR / "league_seasons.csv")
+zones = pd.read_csv(DATA_DIR / "shot_zones.csv")
+positions = pd.read_csv(DATA_DIR / "position_shooting.csv")
+
+# pre-compute a few "nice to display" columns so tooltips read as percentages
 league["three_share"] = (league["fg3a_pg"] / league["fga_pg"] * 100).round(1)
-league["fg3_pct_display"] = (league["fg3_pct"] * 100).round(1)
+league["ts_pct_display"] = (league["ts_pct"] * 100).round(1)
+
+zones["pct_display"] = (zones["pct_of_fga"] * 100).round(1)
+zones["fg_pct_display"] = (zones["fg_pct"] * 100).round(1)
+
+positions["fg3_pct_display"] = (positions["fg3_pct"] * 100).round(1)
+positions["ts_pct_display"] = (positions["ts_pct"] * 100).round(1)
+
+ZONE_ORDER = ["0-3 ft", "3-10 ft", "10-16 ft", "16 ft - 3PT", "3-Point"]
+ZONE_COLORS = ["#b91c1c", "#f97316", "#eab308", "#0ea5e9", "#1e40af"]
+POSITION_ORDER = ["PG", "SG", "SF", "PF", "C"]
+ERA_ORDER = ["1990s", "2000s", "2010s", "2020s"]
+ERA_COLORS = ["#cbd5e1", "#94a3b8", "#2563eb", "#1e1b4b"]
 
 
-def era_label(year: int) -> str:
-    if year <= 2003:
-        return "Before 2004 rule changes"
-    if year <= 2014:
-        return "Transition years"
-    return "Modern spacing era"
-
-
-league["era"] = league["season_start"].apply(era_label)
-
-
-# Simple position chart data.
-# These are rough decade-level values meant for a supporting chart,
-# not the main statistical claim of the piece.
-position_data = pd.DataFrame(
-    [
-        ("1990s", "Point Guard", 3.8),
-        ("1990s", "Shooting Guard", 2.9),
-        ("1990s", "Small Forward", 1.1),
-        ("1990s", "Power Forward", 0.4),
-        ("1990s", "Center", 0.0),
-        ("2010s", "Point Guard", 5.2),
-        ("2010s", "Shooting Guard", 4.8),
-        ("2010s", "Small Forward", 3.2),
-        ("2010s", "Power Forward", 1.8),
-        ("2010s", "Center", 0.3),
-        ("2020s", "Point Guard", 8.1),
-        ("2020s", "Shooting Guard", 7.4),
-        ("2020s", "Small Forward", 6.1),
-        ("2020s", "Power Forward", 4.2),
-        ("2020s", "Center", 2.9),
-    ],
-    columns=["era", "position", "fg3a_pg"],
-)
-
-
-# -----------------------------
-# Altair setup
-# -----------------------------
 alt.data_transformers.disable_max_rows()
 base_config = {
     "view": {"stroke": None},
@@ -148,393 +66,469 @@ base_config = {
     "title": {"font": "Arial", "color": "#222222"},
 }
 
-# Chart 1: rise of threes
-hover1 = alt.selection_point(fields=["season"], nearest=True, on="mouseover", empty=False)
+
+# Chart 1: rise of the three-point shot
+rule_changes = pd.DataFrame(
+    [
+        (1979, "3-point line added"),
+        (1994, "line shortened"),
+        (1997, "line moved back"),
+        (2004, "hand-check banned"),
+        (2015, "pace-and-space era"),
+    ],
+    columns=["season_start", "label"],
+)
+
+chart1_rules = (
+    alt.Chart(rule_changes)
+    .mark_rule(color="#9ca3af", strokeDash=[4, 4])
+    .encode(x="season_start:Q")
+)
+
+chart1_text = (
+    alt.Chart(rule_changes)
+    .mark_text(align="left", dx=5, dy=-4, fontSize=10, color="#6b7280")
+    .encode(x="season_start:Q", y=alt.value(14), text="label:N")
+)
 
 chart1_line = (
     alt.Chart(league)
-    .mark_line(color="#2b6cb0", strokeWidth=3)
+    .mark_line(strokeWidth=3, color="#1d4ed8", point=True)
     .encode(
-        x=alt.X("season_start:Q", title="Season"),
-        y=alt.Y("fg3a_pg:Q", title="Three-point attempts per game"),
+        x=alt.X("season_start:Q", title="Season", axis=alt.Axis(format="d")),
+        y=alt.Y("fg3a_pg:Q", title="3-point attempts per game"),
         tooltip=[
             alt.Tooltip("season:N", title="Season"),
             alt.Tooltip("fg3a_pg:Q", title="3PA/game"),
-            alt.Tooltip("three_share:Q", title="3PA share of all shots (%)"),
+            alt.Tooltip("three_share:Q", title="% of all shots", format=".1f"),
         ],
     )
 )
 
-chart1_points = chart1_line.mark_circle(size=55).encode(opacity=alt.condition(hover1, alt.value(1), alt.value(0)))
-chart1_rule = (
-    alt.Chart(league)
-    .mark_rule(color="#999999")
-    .encode(x="season_start:Q")
-    .transform_filter(hover1)
+chart1 = (
+    (chart1_rules + chart1_text + chart1_line)
+    .properties(
+        width=720,
+        height=320,
+        title="Chart 1. The three-point shot went from novelty to default offense",
+    )
+    .configure(**base_config)
 )
 
-chart1_annotations = pd.DataFrame(
-    [
-        (1979, 4.5, "3-point line added"),
-        (1995, 14.5, "line shortened"),
-        (1998, 12.0, "line restored"),
-        (2015, 24.0, "pace-and-space takes off"),
-    ],
-    columns=["season_start", "fg3a_pg", "label"],
-)
 
-chart1_text = (
-    alt.Chart(chart1_annotations)
-    .mark_text(align="left", dx=6, dy=-8, fontSize=11, color="#555555")
-    .encode(x="season_start:Q", y="fg3a_pg:Q", text="label:N")
-)
+# Chart 2: pace, scoring, and efficiency (pick one with the radio)
+metric_names = {
+    "pts_pg": "Points per game",
+    "pace": "Pace (possessions per 48)",
+    "ortg": "Offensive rating (pts per 100 poss.)",
+    "ts_pct_display": "True shooting % (league)",
+}
 
-chart1 = (chart1_line + chart1_points + chart1_rule + chart1_text).add_params(hover1).properties(
-    width=720,
-    height=300,
-    title="Chart 1. The three-point shot went from novelty to default offense",
-).configure(**base_config)
-
-
-# Chart 2: pace and scoring after the early-2000s slowdown
-long_pace = league[["season_start", "season", "pace", "pts_pg"]].melt(
-    id_vars=["season_start", "season"],
-    value_vars=["pace", "pts_pg"],
-    var_name="metric",
+c2_long = league.melt(
+    id_vars=["season", "season_start"],
+    value_vars=list(metric_names.keys()),
+    var_name="metric_key",
     value_name="value",
 )
-metric_labels = ["pace", "pts_pg"]
-metric_names = {"pace": "Pace (possessions per 48)", "pts_pg": "Points per game"}
-long_pace["metric_label"] = long_pace["metric"].map(metric_names)
+c2_long["metric"] = c2_long["metric_key"].map(metric_names)
 
 metric_select = alt.selection_point(
-    fields=["metric_label"],
+    fields=["metric"],
     bind=alt.binding_radio(options=list(metric_names.values()), name="Show: "),
-    value="Points per game",
+    value="Offensive rating (pts per 100 poss.)",
 )
 
 chart2 = (
-    alt.Chart(long_pace)
-    .mark_line(strokeWidth=3)
+    alt.Chart(c2_long)
+    .mark_line(strokeWidth=3, color="#0d9488")
     .encode(
-        x=alt.X("season_start:Q", title="Season"),
-        y=alt.Y("value:Q", title="Value"),
-        color=alt.Color(
-            "metric_label:N",
-            scale=alt.Scale(domain=list(metric_names.values()), range=["#1f9d8a", "#d97706"]),
-            legend=None,
-        ),
+        x=alt.X("season_start:Q", title="Season", axis=alt.Axis(format="d")),
+        y=alt.Y("value:Q", title="Value", scale=alt.Scale(zero=False)),
         tooltip=[
             alt.Tooltip("season:N", title="Season"),
-            alt.Tooltip("metric_label:N", title="Metric"),
-            alt.Tooltip("value:Q", title="Value"),
+            alt.Tooltip("metric:N", title="Metric"),
+            alt.Tooltip("value:Q", title="Value", format=".1f"),
         ],
     )
     .transform_filter(metric_select)
     .add_params(metric_select)
     .properties(
         width=720,
-        height=300,
-        title="Chart 2. The dead-ball low point in the early 2000s did not last",
+        height=320,
+        title="Chart 2. Scoring, pace, and efficiency each tell a different part of the story",
     )
     .configure(**base_config)
 )
 
 
-# Chart 3: era comparison for 3PA/game and 3P%
-era_select = alt.selection_point(
-    fields=["era"],
-    bind=alt.binding_select(options=sorted(league["era"].unique()), name="Focus era: "),
-    value="Modern spacing era",
-)
-
-chart3_a = (
-    alt.Chart(league)
-    .mark_circle(size=90, color="#7c3aed")
+# Chart 3: where shots come from (stacked area of shot zones)
+chart3 = (
+    alt.Chart(zones)
+    .mark_area(opacity=0.92)
     .encode(
-        x=alt.X("fg3a_pg:Q", title="3PA per game"),
-        y=alt.Y("fg3_pct_display:Q", title="3-point percentage"),
+        x=alt.X(
+            "season_start:Q",
+            title="Season",
+            axis=alt.Axis(format="d"),
+            scale=alt.Scale(domain=[1996, 2023]),
+        ),
+        y=alt.Y(
+            "pct_of_fga:Q",
+            stack="normalize",
+            title="Share of all shot attempts",
+            axis=alt.Axis(format="%"),
+        ),
+        color=alt.Color(
+            "zone:N",
+            sort=ZONE_ORDER,
+            scale=alt.Scale(domain=ZONE_ORDER, range=ZONE_COLORS),
+            title="Shot zone",
+            legend=alt.Legend(orient="right"),
+        ),
+        order=alt.Order("zone:N", sort="ascending"),
         tooltip=[
             alt.Tooltip("season:N", title="Season"),
-            alt.Tooltip("fg3a_pg:Q", title="3PA/game"),
-            alt.Tooltip("fg3_pct_display:Q", title="3P%"),
-            alt.Tooltip("era:N", title="Era"),
-        ],
-        opacity=alt.condition(era_select, alt.value(1), alt.value(0.18)),
-    )
-    .add_params(era_select)
-)
-
-chart3_b = (
-    alt.Chart(league)
-    .mark_line(color="#c084fc", strokeDash=[5, 5])
-    .encode(
-        x="fg3a_pg:Q",
-        y="fg3_pct_display:Q",
-        detail="era:N",
-    )
-    .transform_filter(era_select)
-)
-
-chart3 = (chart3_a + chart3_b).properties(
-    width=720,
-    height=300,
-    title="Chart 3. Teams kept shooting more threes even when accuracy stayed fairly stable",
-).configure(**base_config)
-
-
-# Chart 4: position shift
-chart4 = (
-    alt.Chart(position_data)
-    .mark_bar()
-    .encode(
-        x=alt.X("position:N", sort=["Point Guard", "Shooting Guard", "Small Forward", "Power Forward", "Center"], title="Position"),
-        y=alt.Y("fg3a_pg:Q", title="Approx. three-point attempts per game"),
-        color=alt.Color(
-            "era:N",
-            scale=alt.Scale(domain=["1990s", "2010s", "2020s"], range=["#c7d2fe", "#60a5fa", "#1d4ed8"]),
-            title="Era",
-        ),
-        xOffset="era:N",
-        tooltip=[
-            alt.Tooltip("era:N", title="Era"),
-            alt.Tooltip("position:N", title="Position"),
-            alt.Tooltip("fg3a_pg:Q", title="3PA/game"),
+            alt.Tooltip("zone:N", title="Zone"),
+            alt.Tooltip("pct_display:Q", title="% of all shots", format=".1f"),
+            alt.Tooltip("fg_pct_display:Q", title="FG% from zone", format=".1f"),
         ],
     )
     .properties(
-        width=720,
-        height=300,
-        title="Chart 4. The job description of every position moved outward",
+        width=700,
+        height=340,
+        title="Chart 3. The mid-range shot has nearly disappeared",
     )
     .configure(**base_config)
 )
 
 
-# -----------------------------
-# HTML output
-# -----------------------------
+# Chart 4: per-position 3-point attempts by era
+era_select = alt.selection_point(
+    fields=["era"],
+    bind=alt.binding_select(options=ERA_ORDER, name="Highlight era: "),
+    value="2020s",
+)
+
+chart4 = (
+    alt.Chart(positions)
+    .mark_bar()
+    .encode(
+        x=alt.X("position:N", sort=POSITION_ORDER, title="Position"),
+        y=alt.Y("fg3a_pg:Q", title="Average 3-point attempts per game"),
+        color=alt.Color(
+            "era:N",
+            sort=ERA_ORDER,
+            scale=alt.Scale(domain=ERA_ORDER, range=ERA_COLORS),
+            title="Era",
+        ),
+        xOffset=alt.XOffset("era:N", sort=ERA_ORDER),
+        opacity=alt.condition(era_select, alt.value(1.0), alt.value(0.25)),
+        tooltip=[
+            alt.Tooltip("era:N", title="Era"),
+            alt.Tooltip("position:N", title="Position"),
+            alt.Tooltip("fg3a_pg:Q", title="3PA/game", format=".1f"),
+            alt.Tooltip("fg3_pct_display:Q", title="3P%", format=".1f"),
+            alt.Tooltip("ts_pct_display:Q", title="TS%", format=".1f"),
+        ],
+    )
+    .add_params(era_select)
+    .properties(
+        width=720,
+        height=320,
+        title="Chart 4. Every position moved outward \u2014 even centers now shoot threes",
+    )
+    .configure(**base_config)
+)
+
+
+# Wrap an Altair chart into a small <div> + vegaEmbed snippet we can
+# drop straight into the HTML article below.
 def embed_chart(chart: alt.Chart, div_id: str) -> str:
     spec = chart.to_json(indent=None)
     return f"""
     <div id=\"{div_id}\" class=\"chart\"></div>
     <script>
-    const spec_{div_id} = {spec};
-    vegaEmbed('#{div_id}', spec_{div_id}, {{actions: false}});
+      vegaEmbed('#{div_id}', {spec}, {{actions: false}});
     </script>
     """
 
 
 html = f"""
 <!doctype html>
-<html lang="en">
+<html lang=\"en\">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset=\"utf-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
   <title>How the NBA Changed Its Game</title>
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <script src=\"https://cdn.jsdelivr.net/npm/vega@5\"></script>
+  <script src=\"https://cdn.jsdelivr.net/npm/vega-lite@5\"></script>
+  <script src=\"https://cdn.jsdelivr.net/npm/vega-embed@6\"></script>
   <style>
     body {{
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Georgia, 'Times New Roman', serif;
       margin: 0;
       background: #fafafa;
-      color: #222;
-      line-height: 1.6;
+      color: #1f2937;
+      line-height: 1.7;
     }}
     .page {{
-      max-width: 850px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 32px 20px 60px 20px;
+      padding: 36px 22px 60px 22px;
       background: white;
     }}
     .kicker {{
-      color: #666;
+      color: #6b7280;
       text-transform: uppercase;
+      font-family: Arial, Helvetica, sans-serif;
       font-size: 12px;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       margin-bottom: 10px;
     }}
     h1 {{
-      font-size: 36px;
+      font-size: 40px;
       line-height: 1.15;
-      margin: 0 0 10px 0;
+      margin: 0 0 12px 0;
+      font-weight: 700;
     }}
     .dek {{
-      font-size: 18px;
-      color: #444;
-      margin-bottom: 18px;
+      font-size: 20px;
+      color: #374151;
+      margin-bottom: 20px;
+      line-height: 1.45;
     }}
     .byline {{
+      font-family: Arial, Helvetica, sans-serif;
       font-size: 14px;
-      color: #666;
-      padding-bottom: 18px;
-      border-bottom: 1px solid #e5e5e5;
-      margin-bottom: 24px;
+      color: #6b7280;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 26px;
     }}
     .note {{
-      background: #f3f4f6;
-      border-left: 4px solid #2563eb;
-      padding: 12px 14px;
-      margin: 20px 0 28px 0;
+      background: #eef2ff;
+      border-left: 4px solid #4338ca;
+      padding: 14px 16px;
+      margin: 22px 0 30px 0;
       font-size: 15px;
+      font-family: Arial, Helvetica, sans-serif;
     }}
     h2 {{
-      margin-top: 34px;
-      margin-bottom: 8px;
-      font-size: 24px;
+      margin-top: 40px;
+      margin-bottom: 10px;
+      font-size: 26px;
+      line-height: 1.25;
     }}
     p {{
       margin-top: 0;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+      font-size: 17px;
     }}
     .chart {{
-      margin: 16px 0 24px 0;
+      margin: 14px 0 10px 0;
     }}
-    .small {{
-      color: #666;
+    .caption {{
+      color: #6b7280;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      margin-bottom: 28px;
+    }}
+    ul.refs {{
+      font-family: Arial, Helvetica, sans-serif;
       font-size: 14px;
-    }}
-    ul {{
       padding-left: 20px;
     }}
-    .refs li {{
+    ul.refs li {{
       margin-bottom: 10px;
     }}
-    .footer {{
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e5e5;
-      color: #666;
+    .glossary {{
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin: 20px 0 24px 0;
+      font-family: Arial, Helvetica, sans-serif;
       font-size: 14px;
     }}
-    a {{
-      color: #1d4ed8;
+    .glossary strong {{ color: #111827; }}
+    .footer {{
+      margin-top: 44px;
+      padding-top: 22px;
+      border-top: 1px solid #e5e7eb;
+      color: #6b7280;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
     }}
+    a {{ color: #1d4ed8; }}
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="kicker">SI 649 · Narrative Visualization Draft</div>
+  <div class=\"page\">
+    <div class=\"kicker\">SI 649 \u00b7 Narrative Visualization</div>
     <h1>How the NBA Changed Its Game</h1>
-    <div class="dek">
-      The modern NBA did not appear overnight. Rule changes opened the perimeter,
-      and then analytics and roster design turned that opening into a new style of basketball.
+    <div class=\"dek\">
+      Over the last half-century the NBA has rebuilt itself around the three-point line.
+      Rule changes opened up the perimeter, and analytics and roster design turned that opening
+      into a new style of basketball \u2014 one with fewer mid-range jumpers, more shooters at every
+      position, and higher scoring than ever before.
     </div>
-    <div class="byline">
+    <div class=\"byline\">
       By Mustada A-Ogaili, Ali Al-Ogaili, Mohammad Farhat, and Lamonte Nunn
     </div>
 
-    <div class="note">
-      <strong>Audience:</strong> This project is written for readers who know the basics of basketball
-      but may not follow advanced stats closely. Our goal is to explain <em>why</em> the game changed,
-      not just show that more threes are being taken.
+    <div class=\"note\">
+      <strong>What this article covers:</strong> how shot selection, pace, and efficiency in the
+      NBA changed between the 1979\u201380 season (when the three-point line was added) and
+      2023\u201324. The charts are interactive \u2014 hover for season values, toggle a metric, or
+      pick an era to focus on.
     </div>
 
-    <h2>What makes this project different</h2>
+    <h2>The three-point shot took decades to become the default</h2>
     <p>
-      Sports visualizations often stop at a familiar conclusion: teams shoot more threes than they used to.
-      We want to push one step further. Our article argues that the style shift happened because the league
-      changed what kinds of offense were rewarded. Rule changes made it easier to attack from the perimeter,
-      and later, analytics made those shots easier to justify and teach.
+      When the NBA added the three-point line in 1979, teams did not really use it.
+      Early in the 1980s, league averages sat around three attempts per game. By 2023\u201324,
+      the league averaged more than 35 threes per team per game \u2014 about a ten-fold jump.
+      The rise was not smooth. It spiked in 1994 when the line was shortened, dropped
+      again when the line was moved back in 1997, and then took off for good after the
+      mid-2000s rule changes that made perimeter defense harder.
     </p>
     <p>
-      To keep the project manageable, we are starting with league-level data that we can verify quickly.
-      If time allows, we can add a few player- or team-level examples later, but the main narrative already
-      works with the data in this draft.
-    </p>
-
-    <h2>1) The three-point line was added in 1979, but teams were slow to fully use it</h2>
-    <p>
-      The first chart shows the long rise of the three-point shot. For years the line was part of the court,
-      but not yet the center of offense. The big jumps come later, especially after teams started treating the
-      three as a normal part of half-court offense instead of a specialty shot.
+      We track the overall 3PA per game below, with dashed lines for the rule changes
+      that seemed to matter most. One thing worth flagging up front: league three-point
+      accuracy has only drifted between about 34% and 37% this whole time. The change in
+      the NBA is not that players learned to shoot \u2014 it is that teams kept deciding
+      to shoot more threes anyway.
     </p>
     {embed_chart(chart1, "chart1")}
-    <p class="small">
-      This chart uses league averages from Basketball-Reference. The labels mark a few historical checkpoints,
-      but our larger point is that adoption was gradual and then suddenly accelerated.
-    </p>
+    <div class=\"caption\">Dashed lines mark key rule changes. Hover to see season values.</div>
 
-    <h2>2) The early 2000s were a low point for pace and scoring</h2>
+    <div class=\"glossary\">
+      <strong>Quick glossary.</strong>
+      <em>True shooting % (TS%)</em> counts threes and free throws alongside regular field goals,
+      so it reflects how efficiently a team scores from every kind of shot.
+      <em>Effective FG% (eFG%)</em> credits a made three as 1.5 made twos.
+      <em>Offensive rating (ORtg)</em> is points scored per 100 possessions \u2014 a pace-neutral
+      view of how good an offense is.
+    </div>
+
+    <h2>Pace crashed, then came back \u2014 and offense kept getting more efficient</h2>
     <p>
-      The second chart focuses on the slow, low-scoring stretch in the early 2000s. Instead of saying one single
-      rule changed everything, we are using this section to show that style is partly shaped by incentives.
-      Once the league became friendlier to perimeter offense, the game opened up again.
+      People sometimes describe the modern NBA as just faster. That is only part of it.
+      Pace actually collapsed in the late 1990s and early 2000s, when rough perimeter
+      defense slowed games down. The 2003\u201304 season hit a low of 93.4 points per game
+      and 90.1 possessions per 48 minutes. Today pace is roughly back to where it was
+      in the 1980s, but offensive rating \u2014 points per 100 possessions \u2014 has climbed
+      to an all-time high near 115.
+    </p>
+    <p>
+      The radio buttons below switch between four measures. Points per game and pace
+      move together, which makes sense: more possessions means more chances to score.
+      But offensive rating and TS% tell a different story. Even on a per-possession
+      basis, modern offenses are the most efficient in league history.
     </p>
     {embed_chart(chart2, "chart2")}
-    <p class="small">
-      Use the radio button above the chart to switch between points per game and pace.
-      This keeps the interaction simple and readable.
-    </p>
+    <div class=\"caption\">
+      Offensive rating and TS% are the pace-adjusted ways to compare eras \u2014 both show the 2020s
+      as the most efficient era on record.
+    </div>
 
-    <h2>3) Accuracy stayed fairly steady, but volume kept climbing</h2>
+    <h2>The mid-range jumper nearly disappeared</h2>
     <p>
-      One reason the modern game feels so different is that teams did not wait for three-point percentage to explode.
-      Instead, they kept increasing volume. That is part of the analytics story: even a similar percentage can become
-      more valuable if the shot is worth an extra point and creates more spacing.
+      Maybe the clearest single chart of the modern NBA is a breakdown of where shots
+      come from. The league started tracking shot location in 1996\u201397. Back then,
+      about a third of all shots came from mid-range \u2014 the 10\u201316 ft zone or the long two.
+      Those shots converted around 40% of the time, which was basically the same expected
+      value as a three, only without the extra point.
+    </p>
+    <p>
+      Teams eventually did the math. Over the next 25 years the mid-range share
+      collapsed. By 2023\u201324 the 10\u201316 ft zone was barely 5% of shots, and long twos
+      fell from about 20% of attempts to under 10%. Those shots did not vanish, they
+      moved \u2014 out to the three-point line, which now produces close to 40% of every
+      shot the league takes, and in to the rim.
     </p>
     {embed_chart(chart3, "chart3")}
-    <p class="small">
-      This view lets the reader focus on one broad era at a time.
-    </p>
+    <div class=\"caption\">
+      Hover any band for zone share and field-goal percentage that season.
+      Shot-location tracking began in 1996\u201397, so the chart starts there.
+    </div>
 
-    <h2>4) Positions became more flexible</h2>
+    <h2>Every position moved outward \u2014 even the centers</h2>
     <p>
-      Our last chart is a supporting comparison. It is not the main proof of the article, but it helps connect the
-      earlier league trends to something readers can picture on the court. If every position is expected to shoot and
-      move in space, then the old position labels start to matter less.
+      The league-wide shift shows up most clearly in what each position is asked to do.
+      In the 1990s, a typical center basically did not shoot threes. Power forwards took
+      a handful a week. Today a starting center averages more than two three-point
+      attempts per game, and power forwards launch more than four. Point guards nearly
+      tripled their three-point volume between the 1990s and the 2020s.
+    </p>
+    <p>
+      Again, this is not really a story about everyone learning to shoot. Three-point
+      accuracy has barely moved in three decades. What changed is the expectation: every
+      position is now asked to shoot from deep, and the bigs who can stretch to the arc
+      give teams the spacing that makes the rest of the offense work.
     </p>
     {embed_chart(chart4, "chart4")}
-    <p class="small">
-      These position values are rough era-level comparison values for the draft. In the final version,
-      we can either keep this as a broad illustration or replace it with a cleaner sourced positional table.
-    </p>
+    <div class=\"caption\">
+      Select an era with the dropdown to highlight it. Tooltip shows 3PA per game, 3P%, and TS%.
+    </div>
 
-    <h2>Conclusion</h2>
+    <h2>What changed, really</h2>
     <p>
-      The easiest way to describe the modern NBA is to say that players just got smarter and started shooting more threes.
-      But that explanation is incomplete. The game changed because rules, strategy, and player development all pushed in the
-      same direction. The result was not just more threes. It was a different idea of what good offense looks like.
+      The four charts together tell a pretty consistent story. Rules changed first:
+      the three-point line in 1979, the elimination of illegal defense in 2001, and the
+      hand-check ban in 2004 all rewarded perimeter movement. Analytics followed: once
+      teams could measure shot efficiency at scale, long twos lost their justification.
+      Rosters changed last: centers added threes because the spacing math demanded it,
+      and point guards became primary scorers instead of just passers.
+    </p>
+    <p>
+      The easy version of this story is that the modern NBA just got faster and more
+      skilled. That is true, but it misses the bigger shift. The deeper change is that
+      the whole definition of a good shot got rewritten, one rule change and one roster
+      at a time.
     </p>
 
-    <h2>Works cited / source list</h2>
-    <ul class="refs">
+    <h2>Sources</h2>
+    <ul class=\"refs\">
       <li>
-        Basketball-Reference. <em>NBA League Averages - Per Game</em>.
-        <a href="https://www.basketball-reference.com/leagues/NBA_stats_per_game.html">https://www.basketball-reference.com/leagues/NBA_stats_per_game.html</a>
+        Basketball-Reference. <em>NBA League Averages \u2013 Per Game</em>.
+        <a href=\"https://www.basketball-reference.com/leagues/NBA_stats_per_game.html\">basketball-reference.com/leagues/NBA_stats_per_game.html</a>
       </li>
       <li>
-        Basketball-Reference. <em>NBA League Averages - Advanced Stats</em>.
-        <a href="https://www.basketball-reference.com/leagues/NBA_stats_advanced.html">https://www.basketball-reference.com/leagues/NBA_stats_advanced.html</a>
+        Basketball-Reference. <em>NBA League Averages \u2013 Advanced</em> (pace, ORtg, TS%, eFG%).
+        <a href=\"https://www.basketball-reference.com/leagues/NBA_stats_advanced.html\">basketball-reference.com/leagues/NBA_stats_advanced.html</a>
       </li>
       <li>
-        NBA.com. <em>This Day in History: Oct. 12 - The first 3-point field goal</em>.
-        <a href="https://www.nba.com/news/this-day-in-history-oct-12-the-first-3-point-field-goal">https://www.nba.com/news/this-day-in-history-oct-12-the-first-3-point-field-goal</a>
+        Basketball-Reference. <em>NBA League Averages \u2013 Shooting</em> (zone distribution).
+        <a href=\"https://www.basketball-reference.com/leagues/NBA_stats_shooting.html\">basketball-reference.com/leagues/NBA_stats_shooting.html</a>
+      </li>
+      <li>
+        NBA.com. <em>This Day in History \u2013 the first three-point field goal</em>.
+        <a href=\"https://www.nba.com/news/this-day-in-history-oct-12-the-first-3-point-field-goal\">nba.com/news/this-day-in-history-oct-12-the-first-3-point-field-goal</a>
       </li>
       <li>
         NBA Video Rulebook. <em>Handcheck</em>.
-        <a href="https://videorulebook.nba.com/rule/handcheck/">https://videorulebook.nba.com/rule/handcheck/</a>
+        <a href=\"https://videorulebook.nba.com/rule/handcheck/\">videorulebook.nba.com/rule/handcheck</a>
       </li>
       <li>
-        Skinner, Brian. 2012. <em>The Problem of Shot Selection in Basketball</em>.
-        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3266291/">https://pmc.ncbi.nlm.nih.gov/articles/PMC3266291/</a>
+        Skinner, B. (2012). <em>The Problem of Shot Selection in Basketball</em>. PLOS ONE.
+        <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC3266291/\">pmc.ncbi.nlm.nih.gov/articles/PMC3266291</a>
       </li>
       <li>
-        Zając, T. et al. 2023. <em>Long-Term Trends in Shooting Performance in the NBA</em>.
-        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9915101/">https://pmc.ncbi.nlm.nih.gov/articles/PMC9915101/</a>
+        Z\u0105j\u0105c et al. (2023). <em>Long-Term Trends in Shooting Performance in the NBA</em>.
+        <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC9915101/\">pmc.ncbi.nlm.nih.gov/articles/PMC9915101</a>
       </li>
     </ul>
 
-    <div class="footer">
-      Draft built in one Python file with Altair. Intended for GitHub Pages as a single HTML page.
+    <div class=\"footer\">
+      Built with Python + Altair. Data loaded from bundled CSVs under <code>/data</code>;
+      rebuild with <code>python nba_story.py</code>.
     </div>
   </div>
 </body>
 </html>
 """
 
-out_path = Path("index.html")
+out_path = Path(__file__).parent / "index.html"
 out_path.write_text(textwrap.dedent(html), encoding="utf-8")
 print(f"Wrote {out_path.resolve()}")
