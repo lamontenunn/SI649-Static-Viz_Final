@@ -79,23 +79,30 @@ rule_changes = pd.DataFrame(
     columns=["season_start", "label"],
 )
 
+season_axis = alt.X(
+    "season_start:Q",
+    title="Season",
+    axis=alt.Axis(format="d"),
+    scale=alt.Scale(domain=[1979, 2024]),
+)
+
 chart1_rules = (
     alt.Chart(rule_changes)
     .mark_rule(color="#9ca3af", strokeDash=[4, 4])
-    .encode(x="season_start:Q")
+    .encode(x=season_axis)
 )
 
 chart1_text = (
     alt.Chart(rule_changes)
     .mark_text(align="left", dx=5, dy=-4, fontSize=10, color="#6b7280")
-    .encode(x="season_start:Q", y=alt.value(14), text="label:N")
+    .encode(x=season_axis, y=alt.value(14), text="label:N")
 )
 
 chart1_line = (
     alt.Chart(league)
     .mark_line(strokeWidth=3, color="#1d4ed8", point=True)
     .encode(
-        x=alt.X("season_start:Q", title="Season", axis=alt.Axis(format="d")),
+        x=season_axis,
         y=alt.Y("fg3a_pg:Q", title="3-point attempts per game"),
         tooltip=[
             alt.Tooltip("season:N", title="Season"),
@@ -142,7 +149,7 @@ chart2 = (
     alt.Chart(c2_long)
     .mark_line(strokeWidth=3, color="#0d9488")
     .encode(
-        x=alt.X("season_start:Q", title="Season", axis=alt.Axis(format="d")),
+        x=season_axis,
         y=alt.Y("value:Q", title="Value", scale=alt.Scale(zero=False)),
         tooltip=[
             alt.Tooltip("season:N", title="Season"),
@@ -491,12 +498,9 @@ html = f"""
     <h2>Sources</h2>
     <ul class=\"refs\">
       <li>
-        Basketball-Reference. <em>NBA League Averages \u2013 Per Game</em>.
+        Basketball-Reference. <em>NBA League Averages \u2013 Per Game</em>
+        (also the source for pace, ORtg, TS%, and eFG%, which are derived from these season totals).
         <a href=\"https://www.basketball-reference.com/leagues/NBA_stats_per_game.html\">basketball-reference.com/leagues/NBA_stats_per_game.html</a>
-      </li>
-      <li>
-        Basketball-Reference. <em>NBA League Averages \u2013 Advanced</em> (pace, ORtg, TS%, eFG%).
-        <a href=\"https://www.basketball-reference.com/leagues/NBA_stats_advanced.html\">basketball-reference.com/leagues/NBA_stats_advanced.html</a>
       </li>
       <li>
         Basketball-Reference. <em>NBA League Averages \u2013 Shooting</em> (zone distribution).

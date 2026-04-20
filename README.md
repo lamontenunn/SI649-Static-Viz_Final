@@ -39,8 +39,7 @@ This regenerates `index.html` from the CSVs in `/data`.
 
 All three CSVs were compiled from Basketball-Reference league pages:
 
-- Per-game averages and three-point volume: <https://www.basketball-reference.com/leagues/NBA_stats_per_game.html>
-- Advanced metrics (pace, ORtg, TS%, eFG%): <https://www.basketball-reference.com/leagues/NBA_stats_advanced.html>
+- Per-game averages, three-point volume, and derived advanced metrics (pace, ORtg, TS%, eFG%): <https://www.basketball-reference.com/leagues/NBA_stats_per_game.html>
 - Shot-zone distribution and per-zone FG%: <https://www.basketball-reference.com/leagues/NBA_stats_shooting.html>
 
 Shot-location tracking began in 1996-97, so `shot_zones.csv` starts there.
