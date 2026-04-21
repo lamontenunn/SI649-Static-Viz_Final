@@ -70,13 +70,13 @@ base_config = {
 # Chart 1: rise of the three-point shot
 rule_changes = pd.DataFrame(
     [
-        (1979, "3-point line added"),
-        (1994, "line shortened"),
-        (1997, "line moved back"),
-        (2004, "hand-check banned"),
-        (2015, "pace-and-space era"),
+        (1979, "3-point line added", 14),
+        (1994, "line shortened", 14),
+        (1997, "line moved back", 28),
+        (2004, "hand-check banned", 14),
+        (2015, "pace-and-space era", 14),
     ],
-    columns=["season_start", "label"],
+    columns=["season_start", "label", "text_y"],
 )
 
 season_axis = alt.X(
@@ -95,7 +95,7 @@ chart1_rules = (
 chart1_text = (
     alt.Chart(rule_changes)
     .mark_text(align="left", dx=5, dy=-4, fontSize=10, color="#6b7280")
-    .encode(x=season_axis, y=alt.value(14), text="label:N")
+    .encode(x=season_axis, y=alt.Y("text_y:Q", scale=None), text="label:N")
 )
 
 chart1_line = (
@@ -380,7 +380,7 @@ html = f"""
       position, and higher scoring than ever before.
     </div>
     <div class=\"byline\">
-      By Mustada A-Ogaili, Ali Al-Ogaili, Mohammad Farhat, and Lamonte Nunn
+      By Mustafa A-Ogaili, Ali Al-Ogaili, Mohammad Farhat, and Lamonte Nunn
     </div>
 
     <div class=\"note\">
