@@ -2,7 +2,7 @@
 
 SI 649 Narrative Visualization Project, Winter 2026.
 
-By Mustada A-Ogaili, Ali Al-Ogaili, Mohammad Farhat, and Lamonte Nunn.
+By Mustafa A-Ogaili, Ali Al-Ogaili, Mohammad Farhat, and Lamonte Nunn.
 
 A data-driven article on how the NBA shifted from a post-heavy, mid-range game
 into a perimeter- and efficiency-driven league between 1979-80 and 2023-24.
